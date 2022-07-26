@@ -1,0 +1,44 @@
+general:
+  me: torsion_recurrent.yml
+  device: cuda:0
+  driver: train_grnn.py
+  output: [local, 1] # root, dir, iter
+
+data:
+  root: /home/oufan/Desktop/IDP/torsions/drk_mcsce
+  start_val: -180.0
+  stop_val: 180.0
+  ohe_size: 180
+  gaussian: True
+  gaussian_margin: 10
+  gaussian_normalize: False
+  gaussian_factor: 0.5
+
+training:
+  tr_batch_size: 100
+  val_batch_size: 100
+  shuffle: True
+  lr_enc: 0.0005
+  lr_scheduler: [plateau, 5, 5, 0.8, 1.0e-6, 'min']
+  weight_decay_enc: 3.0e-4
+  clip_grad: 1
+  n_epochs: 300
+
+checkpoint:
+  verbose: False
+
+filter:
+  n_layer: 2
+  out: 128
+  embedding: 64
+  dropout: 0.1
+
+model:
+  recurrent: lstm
+  rec_neurons_num: 200
+  rec_stack_size: 2
+  rec_dropout: 0.1
+
+
+
+
