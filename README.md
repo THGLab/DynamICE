@@ -15,6 +15,7 @@ A generative-reinforcement model (RL-GRNN) to generate new IDP conformer ensembl
 * seaborn
 * numpy
 * mdtraj
+* scipy
 
 ## Training
 Modify parameters in training files based on request.
