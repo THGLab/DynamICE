@@ -8,7 +8,7 @@ A generative-reinforcement model (RL-GRNN) to generate new IDP conformer ensembl
 * pytorch 
 * idpconfgen (https://github.com/Oufan75/IDPConformerGenerator.git, modified from https://github.com/julie-forman-kay-lab/IDPConformerGenerator.git)
 * sidechainnet (included, modified from https://github.com/jonathanking/sidechainnet.git)
-* X-EISD (https://github.com/Oufan75/X-EISD.git, modified from https://github.com/THGLab/X-EISD.git)
+* X-EISD (https://github.com/THGLab/X-EISD.git)
 ### optional packages for plotting and analysis
 * Biopython
 * matplotlib

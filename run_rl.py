@@ -67,7 +67,7 @@ conformer_generator = ConformerGenerator(IDP_SEQ, data, test[:, :8])
 
 # properties meta data and back calculation
 metadata_path = '/home/oufan/Desktop/X-EISD/data'
-filenames = meta_data(metadata_path, 'drk')
+filenames = meta_data(metadata_path)
 exp_data = read_data(filenames['exp'], mode='exp')
 bc_data = read_data(filenames['mcsce'], mode='mcsce')
 
