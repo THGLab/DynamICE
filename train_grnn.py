@@ -24,7 +24,7 @@ device = torch.device(settings['general']['device'])
 # data
 root = settings['data']['root'].strip()
 data = np.load(os.path.join(root, 'bbsc.npy'))
-train, val, _ = split_data(data[:7373], train_size=5000, val_size=500, seed=1)
+train, val, _ = split_data(data[:1000], train_size=500, val_size=100, seed=1)
 smearing = (settings['data']['start_val'],
             settings['data']['stop_val'],
             settings['data']['ohe_size'])

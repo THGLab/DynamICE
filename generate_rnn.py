@@ -7,7 +7,7 @@ import numpy as np
 import torch
 import yaml
 import os
-from dynamice.data import torsion_loader#, split_data
+from dynamice.data import torsion_loader, split_data
 from dynamice.models import RecurrentModel
 from dynamice.utils import generate_tor_marker
 
@@ -22,15 +22,15 @@ asyn_seq = 'MDVFMKGLSKAKEGVVAAAEKTKQGVAEAAGKTKEGVLYVGSKTKEGVVHGVATVAEKTKEQVTNVGG
 VTGVTAVAQKTVEGAGSIAAATGFVKKDQLGKNEEGAPQEGILEDMPVDPDNEAYEMPSEEGYQDYEPEA'     
 
 IDP_SEQ = drk_seq
-settings_path = 'local/training_25/run_scripts'
+settings_path = 'local/training_1/run_scripts'
 settings = yaml.safe_load(open(settings_path+'/torsion_recurrent.yml', "r"))
 
 device = torch.device('cuda:0')
 # data
-#root = settings['data']['root'].strip()
-#data = np.load(os.path.join(root, 'bbsc.npy'))
-#_, _, test = split_data(data[:7373], train_size=5000, val_size=500, seed=1, 
-#                  save_path=settings_path)
+root = settings['data']['root'].strip()
+data = np.load(os.path.join(root, 'bbsc.npy'))
+_, _, test = split_data(data[:1000], train_size=500, val_size=100, seed=1, 
+                  save_path=settings_path)
 
 test = np.load(os.path.join(settings_path, 'test_bbsc.npy'))
 smearing = (settings['data']['start_val'],
@@ -62,16 +62,16 @@ model = RecurrentModel(recurrent=settings['model']['recurrent'],
                           embed_in=3)
             
 output_path = settings['general']['output']
-out_path = os.path.join(output_path[0], output_path[1], 'training_%i'%output_path[2], 'reinforce')
+out_path = os.path.join(output_path[0], 'training_%i'%output_path[1])
 model.load_state_dict(torch.load(os.path.join(out_path, 'best_model.tar')))
 model.to(device)
 model.eval()
 
 generator = ConformerGenerator(IDP_SEQ, test_batch, test[:, :8])
-#generator.get_conformer(model, npdb=20, energy=250, save_pdb=True,
-#                        pdb_dir=os.path.join(out_path, 'pdbs'))
+generator.get_conformer(model, npdb=1, energy=250, save_pdb=True,
+                        pdb_dir=os.path.join(out_path, 'test_pdbs'))
 
-
+'''
 phi = []
 psi = []
 omg = []
@@ -95,7 +95,7 @@ for n in range(100):
 #torsion_hist(chi1, 'chi1')#, os.path.join(out_path, 'chi1.png'))
 #torsion_hist(chi2, 'chi2')#, os.path.join(out_path, 'chi2.png'))
 
-
+'''
 
 
 

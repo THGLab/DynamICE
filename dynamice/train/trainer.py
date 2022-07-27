@@ -223,7 +223,7 @@ class Trainer:
         """
         model = self.model
         model.to(self.device)  
-        populate_tor_marker(self.sequence, True)
+        populate_tor_marker(self.sequence)
         assert omega_pos is not np.nan
         self.best_val = 1e5
         
@@ -329,7 +329,7 @@ class Trainer:
 
             # learning rate decay
             if self.lr_scheduler[0] == 'plateau':
-                running_val_quality.append(vallist)
+                running_val_quality.append(valloss)
                 if len(running_val_quality) > self.lr_scheduler[1]:
                     running_val_quality.pop(0)
                 accum_val_quality = np.mean(running_val_quality)
@@ -341,5 +341,5 @@ class Trainer:
             for i, param_group in enumerate(self.scheduler.optimizer.param_groups):
                 lr = float(param_group["lr"])
 
-            self.store_checkpoint((running_loss, vallist,
+            self.store_checkpoint((running_loss, valloss,
                                    lr, time.time()-t0, val_mae), step)

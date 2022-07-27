@@ -309,6 +309,7 @@ def torsion_loader(data,
                 batch_dataset['res_idx'] = np.tile(res_type, (batch_size, 1))
             else:
                 batch_dataset['res_type'] = np.tile(res_type, (batch_size, 1, 1))
+            batch_dataset = BatchDataset(batch_dataset, device)
 
             if n_steps == split+1:
                 complete_epoch = True
@@ -337,6 +338,7 @@ def torsion_loader(data,
                 batch_dataset['res_idx'] = np.tile(res_type, (data_batch.shape[0], 1))
             else:
                 batch_dataset['res_type'] = np.tile(res_type, (data_batch.shape[0], 1, 1))
+            batch_dataset = BatchDataset(batch_dataset, device)
 
             yield batch_dataset, True
 

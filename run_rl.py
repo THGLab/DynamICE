@@ -55,7 +55,7 @@ model = RecurrentModel(recurrent=settings['model']['recurrent'],
                           embed_in=3)
            
 output_path = settings['general']['output']
-out_path = os.path.join(output_path[0], output_path[1], 'training_%i'%output_path[2])
+out_path = os.path.join(output_path[0], 'training_%i'%output_path[1])
 model.load_state_dict(torch.load(os.path.join(out_path, 'best_model.tar')))
 model.to(device)
 
