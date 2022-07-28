@@ -1,5 +1,8 @@
 #ignore outputs
 local/
 __pycache__/
+
+# ipynb
+*.ipynb
 .ipynb_checkpoints/
 
