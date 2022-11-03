@@ -88,6 +88,19 @@ def compute_recon_quality_residue(x, x_hat, seq):
     return compute_recon_quality(x, x_hat)
 
 
+def compute_recon_quality_backbone(x, x_hat):
+
+    # x shape (batch, seq*3, bins)
+    ntors  = x.shape[1]
+    # omega distance
+    omega_mae = compare_diff_soft(x_degree, x_hat_degree, np.arange(0, ntors, 3))
+    # phi distance
+    phi_mae = compare_diff_soft(x_degree, x_hat_degree, np.arange(1, ntors, 3))
+    # psi distance
+    psi_mae = compare_diff_soft(x_degree, x_hat_degree, np.arange(2, ntors, 3))
+
+    return [omega_mae, phi_mae, psi_mae]
+
 class Trainer:
     """
     Parameters
@@ -177,6 +190,30 @@ class Trainer:
         self.log['val_loss'].append(input[1])
         self.log['lr_enc'].append(input[2])
         self.log['time'].append(input[3])
+         
+        if self.mode == 'backbone':
+            self.log['val_omega_mae'].append(input[4][0])
+            self.log['val_phi_mae'].append(input[4][1])
+            self.log['val_psi_mae'].append(input[4][2])
+            print("[%d, %3d] loss: %.6f; val_loss: %.6f; val_omega_mae: %.6f; val_phi_mae: %.6f; \
+              val_psi_mae: %.6f; lr_enc: %.8f; epoch_time: %.3f" %  
+              (self.epoch, steps, input[0], input[1], input[4][0], input[4][1], input[4][2], input[2], input[3]))
+            pd.DataFrame(self.log).to_csv(os.path.join(self.output_path, 'log.csv'), index=False)
+            return
+
+        if self.mode == 'sidechain':
+            self.log['val_chi1_mae'].append(input[4][3])
+            self.log['val_chi2_mae'].append(input[4][4])
+            self.log['val_chi3_mae'].append(input[4][5])
+            self.log['val_chi4_mae'].append(input[4][6])
+            self.log['val_chi5_mae'].append(input[4][7])
+            pd.DataFrame(self.log).to_csv(os.path.join(self.output_path, 'log.csv'), index=False)
+            print("[%d, %3d] loss: %.6f; val_loss: %.6f; val_x1_mae: %.6f; val_x2_mae: %.6f; val_x3_mae: %.6f; \
+                  val_x4_mae: %.6f; val_x5_mae: %.6f; lr_enc: %.8f; epoch_time: %.3f" %  
+              (self.epoch, steps, input[0], input[1], input[4][0], input[4][1], input[4][2], input[4][3], 
+               input[4][4], input[2], input[3]))
+            return
+        
         self.log['val_omega_mae'].append(input[4][0])
         self.log['val_phi_mae'].append(input[4][1])
         self.log['val_psi_mae'].append(input[4][2])
@@ -185,9 +222,7 @@ class Trainer:
         self.log['val_chi3_mae'].append(input[4][5])
         self.log['val_chi4_mae'].append(input[4][6])
         self.log['val_chi5_mae'].append(input[4][7])
-
         pd.DataFrame(self.log).to_csv(os.path.join(self.output_path, 'log.csv'), index=False)
-
         print("[%d, %3d] loss: %.6f; val_loss: %.6f; val_omega_mae: %.6f; val_phi_mae: %.6f; \
               val_psi_mae: %.6f; val_x1_mae: %.6f; val_x2_mae: %.6f; val_x3_mae: %.6f; \
                   val_x4_mae: %.6f; val_x5_mae: %.6f; lr_enc: %.8f; epoch_time: %.3f" %  
@@ -200,7 +235,6 @@ class Trainer:
                 if torch.is_tensor(v):
                     state[k] = v.to(self.device)
         return optimizer
-
 
 
     def train(self, train_gen, val_gen, epochs, clip_grad,
@@ -226,7 +260,7 @@ class Trainer:
         populate_tor_marker(self.sequence)
         assert omega_pos is not np.nan
         self.best_val = 1e5
-        
+        self.mode = 'all'
         optimizer = self._optimizer_to_device(self.optimizer)
 
         running_val_quality = []

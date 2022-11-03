@@ -79,7 +79,7 @@ def compute_loss(x, x_hat, seq=IDP_SEQ):
     for n in range(len(seq)-1):
          idx.extend(list(np.arange(num[n])+n*8))
     # remove the end backbones torsions
-    idx.pop(-4+num[-1])
+    idx.pop(2-num[-1])
     # apply the mask
     x = x[:, idx, :]
     x_hat = x_hat[:, idx, :] 

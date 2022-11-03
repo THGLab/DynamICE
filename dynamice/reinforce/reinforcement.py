@@ -142,16 +142,14 @@ class Reinforcement(object):
         for prop in coeff:
             if prop in ['noe', 'pre']:
                 dist_list = torch.mean(torch.stack(bc_list[prop], dim=0)**(-6), dim=0)**(-1./6.)
-                dloss = FBloss(dist_list, exp_data[prop], exp_data['error'][prop]) 
-                        #mseloss(dist_list, torch.tensor(exp_data[prop], dtype=torch.float32, device=self.device))
+                dloss = mseloss(dist_list, torch.tensor(exp_data[prop], dtype=torch.float32, device=self.device))
                         #FBloss(dist_list, exp_data[prop], exp_data['error'][prop]) 
                 if self.init_coeff[prop] is None:
                     self.init_coeff[prop] = 0.2*dloss.detach()
                 loss += coeff[prop]*dloss/self.init_coeff[prop]
             elif prop in ['jc', 'fret']:
                 jc_list = torch.mean(torch.stack(bc_list[prop], dim=0), dim=0)
-                jloss = FBloss(jc_list, exp_data[prop], exp_data['error'][prop]) 
-                        #mseloss(jc_list, torch.tensor(exp_data[prop], dtype=torch.float32, device=self.device))
+                jloss = mseloss(jc_list, torch.tensor(exp_data[prop], dtype=torch.float32, device=self.device))
                         #FBloss(jc_list, exp_data[prop], exp_data['error'][prop]) 
                 if self.init_coeff[prop] is None:
                     self.init_coeff[prop] = 0.2*jloss.detach()
