@@ -35,9 +35,11 @@ def FBloss(bc, exp, errors):
     exp[up_mask] += errors[1][up_mask]
     exp[low_mask] -= errors[0][low_mask] 
     tmask = np.logical_or(low_mask, up_mask)
-    c = tmask.sum()/bc_copy.shape[-1] #normalize
+    if tmask.sum() == bc_copy.shape[-1]:
+        return 0.
+    #c = tmask.sum()/bc_copy.shape[-1] #normalize
     
-    return c*mseloss(bc[tmask], torch.tensor(exp[tmask], dtype=torch.float32, device=bc.device))
+    return mseloss(bc[tmask], torch.tensor(exp[tmask], dtype=torch.float32, device=bc.device))
 
 
 class Reinforcement(object):

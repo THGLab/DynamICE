@@ -126,8 +126,8 @@ def rank_reward(reward_list, ratio):
 n_iterations = 200
 rewards = {'jc': [], 'noe': [], 'pre': []}
 # optimization weight hyperparameters
-coeffs = {'noe': 4, 'jc': 1} 
-temp_schedule = [(0.985**n) for n in range(n_iterations)]
+coeffs = {'noe': 2, 'jc': 1} 
+temp_schedule = [(0.98**n) for n in range(n_iterations)]
 last_score = 0
 saved_idx = -1
 # read exp data
