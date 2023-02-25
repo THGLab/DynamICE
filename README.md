@@ -15,3 +15,4 @@ Modify parameters in training files based on request.
 * train_grnn.py for pretraining generative model.
 * generate_rnn.py for generating conformers with trained models.
 * run_rl.py for reinforcement learning with pretrained models.
+* torsion_splits.py for extracting backbone and sidechain torsion angles for pre-training. 

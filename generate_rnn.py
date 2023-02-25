@@ -23,7 +23,7 @@ VTGVTAVAQKTVEGAGSIAAATGFVKKDQLGKNEEGAPQEGILEDMPVDPDNEAYEMPSEEGYQDYEPEA'
 
 IDP_SEQ = drk_seq
 settings_path = 'local/training_1/run_scripts'
-settings = yaml.safe_load(open(settings_path+'/torsion_recurrent.yml', "r"))
+settings = yaml.safe_load(open(settings_path+'/config.yml', "r"))
 
 device = torch.device('cuda:0')
 # data

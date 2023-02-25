@@ -52,13 +52,14 @@ def get_bbs(pdblist, nseq):
 
 
 # sidechain outfile
-idp_path = 'torsions/asyn_mcsce'
-sc_out = os.path.join(idp_path, 'sc_LH.out')
-pdblist = ['torsions/asyn_mcsce/total/%i.pdb'%(n+1) for n in range(7625, 10085)]
+idp_path = 'data'
+sc_out = os.path.join(idp_path, 'drk_cs_LE.out')
+pdblist = ['torsions/drk_mcsce/total/%i.pdb'%(n+1) for n in range(7372)]
 sc = GetTorsion().read_torsions(pdblist, outfile=sc_out, chi=[1,2,3,4,5])
 
-sequence = 'MDVFMKGLSKAKEGVVAAAEKTKQGVAEAAGKTKEGVLYVGSKTKEGVVHGVATVAEKTKEQVTNVGGAVVTGVTAVAQKTVEGAGSIAAATGFVKKDQLGKNEEGAPQEGILEDMPVDPDNEAYEMPSEEGYQDYEPEA'
-#'MEAIAKHDFSATADDELSFRKTQILKILNMEDDSNWYRAELDGKEGLIPSNYIEMKNHD'
+sequence = \ 
+#'MDVFMKGLSKAKEGVVAAAEKTKQGVAEAAGKTKEGVLYVGSKTKEGVVHGVATVAEKTKEQVTNVGGAVVTGVTAVAQKTVEGAGSIAAATGFVKKDQLGKNEEGAPQEGILEDMPVDPDNEAYEMPSEEGYQDYEPEA'
+'MEAIAKHDFSATADDELSFRKTQILKILNMEDDSNWYRAELDGKEGLIPSNYIEMKNHD'
 
 seq_len = len(sequence)
 sc_read = pd.read_csv(sc_out)[['chi1', 'chi2', 'chi3', 'chi4', 'chi5']]
@@ -66,7 +67,7 @@ chis = get_chis(sc_read, len(pdblist), sequence)
 backbones = get_bbs(pdblist, seq_len)
 bbsc = np.dstack((np.reshape(backbones, (-1, seq_len, 3)), chis))
 bbsc = bbsc.reshape(-1, seq_len*8)
-np.save(os.path.join(idp_path, 'bbsc2.npy'), bbsc)
+np.save(os.path.join(idp_path, 'bbsc.npy'), bbsc)
 #save_torsion_npy(bbsc, 1500, 100, idp_path)
 
 

@@ -16,7 +16,7 @@ VTGVTAVAQKTVEGAGSIAAATGFVKKDQLGKNEEGAPQEGILEDMPVDPDNEAYEMPSEEGYQDYEPEA'
 
 IDP_SEQ = drkseq
 
-settings_path = 'torsion_recurrent.yml'
+settings_path = 'config.yml'
 settings = yaml.safe_load(open(settings_path, "r"))
 
 device = torch.device(settings['general']['device'])
@@ -24,7 +24,7 @@ device = torch.device(settings['general']['device'])
 # data
 root = settings['data']['root'].strip()
 data = np.load(os.path.join(root, 'bbsc.npy'))
-train, val, _ = split_data(data[:1000], train_size=500, val_size=100, seed=1)
+train, val, _ = split_data(data[:6000], train_size=4000, val_size=1000, seed=1)
 smearing = (settings['data']['start_val'],
             settings['data']['stop_val'],
             settings['data']['ohe_size'])

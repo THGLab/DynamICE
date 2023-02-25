@@ -13,6 +13,7 @@ from dynamice.reinforce.generator import ConformerGenerator
 from dynamice.utils.utility import get_scn_labels
 
 import logging
+import time
 logger = logging.getLogger('numba')
 logger.setLevel(logging.WARNING)
 
@@ -20,10 +21,12 @@ logger.setLevel(logging.WARNING)
 drkseq = 'MEAIAKHDFSATADDELSFRKTQILKILNMEDDSNWYRAELDGKEGLIPSNYIEMKNHD'
 asynseq = 'MDVFMKGLSKAKEGVVAAAEKTKQGVAEAAGKTKEGVLYVGSKTKEGVVHGVATVAEKTKEQVTNVGGAV\
 VTGVTAVAQKTVEGAGSIAAATGFVKKDQLGKNEEGAPQEGILEDMPVDPDNEAYEMPSEEGYQDYEPEA'
-IDP_SEQ = drkseq
+his5seq = 'DSHAKRHHGYKRKFHEKHHSHRGY'
+
+IDP_SEQ = his5seq
 
 settings_path = 'local/training_1/run_scripts'
-settings = yaml.safe_load(open(settings_path+'/torsion_recurrent.yml', "r"))
+settings = yaml.safe_load(open(settings_path+'/config.yml', "r"))
 device = torch.device('cuda:0')
 test = np.load(os.path.join(settings_path, 'test_bbsc.npy'))
 smearing = (settings['data']['start_val'],
@@ -67,12 +70,12 @@ conformer_generator = ConformerGenerator(IDP_SEQ, data, test[:, :8])
 
 # properties meta data and back calculation
 metadata_path = '/home/oufan/Desktop/X-EISD/data'
-filenames = meta_data(metadata_path)
+filenames = meta_data(metadata_path, 'his5')
 exp_data = read_data(filenames['exp'], mode='exp')
 bc_data = read_data(filenames['mcsce'], mode='mcsce')
 
 # initial ensemble
-props = ['jc', 'noe'] #'fret','pre', 'cs',
+props = ['jc', 'noe'] #'fret'
 eisd = EISD_API(exp_data, bc_data, props)
 eisd.init_ensemble()
 del exp_data, bc_data
@@ -123,7 +126,7 @@ def rank_reward(reward_list, ratio):
     return score
 
 
-n_iterations = 200
+n_iterations = 5
 rewards = {'jc': [], 'noe': [], 'pre': []}
 # optimization weight hyperparameters
 coeffs = {'noe': 2, 'jc': 1} 
@@ -133,7 +136,7 @@ saved_idx = -1
 # read exp data
 scnlabels = get_scn_labels(IDP_SEQ)
 exp, exp_idxs = RL.get_exp_data(scnlabels)
-
+st = time.time()
 
 for i in range(n_iterations):
     # Reinforce algorithm
@@ -152,12 +155,13 @@ for i in range(n_iterations):
           'noe:', np.round(eisd['noe'], 2),
           #'pre:', np.round(eisd['pre'], 2),
           )   
-
-    curr_score = rank_reward(rewards, ratio={'jc': [-120, 1], 'noe': [450, 5]})
+    print('time for iter: %s min'%((time.time()-st)/60.))
+    
+    curr_score = rank_reward(rewards, ratio={'jc': [-120, 1], 'noe': [50, 5]})
     if curr_score > last_score or i == 0:
         saved_idx = i
         last_score = curr_score
         torch.save(RL.generator.state_dict(), os.path.join(output_dir, 'model_noejc.tar'))
-        
+    st = time.time()    
 print('saved checkpoint:', saved_idx+1)
 print('done')
