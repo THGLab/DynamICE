@@ -22,8 +22,7 @@ drkseq = 'MEAIAKHDFSATADDELSFRKTQILKILNMEDDSNWYRAELDGKEGLIPSNYIEMKNHD'
 asynseq = 'MDVFMKGLSKAKEGVVAAAEKTKQGVAEAAGKTKEGVLYVGSKTKEGVVHGVATVAEKTKEQVTNVGGAV\
 VTGVTAVAQKTVEGAGSIAAATGFVKKDQLGKNEEGAPQEGILEDMPVDPDNEAYEMPSEEGYQDYEPEA'
 his5seq = 'DSHAKRHHGYKRKFHEKHHSHRGY'
-
-IDP_SEQ = his5seq
+IDP_SEQ = drkseq
 
 settings_path = 'local/training_1/run_scripts'
 settings = yaml.safe_load(open(settings_path+'/config.yml', "r"))
@@ -80,15 +79,15 @@ eisd = EISD_API(exp_data, bc_data, props)
 eisd.init_ensemble()
 del exp_data, bc_data
 
-# instantiate reinforcement
+# instantiate optimizer
 optimizer = Adam([{'params':model.linear_phi.parameters(), 'lr': 0.0005}, 
                   {'params':model.linear_psi.parameters(), 'lr': 0.0005},
                   {'params':model.linear_out.parameters(), 'lr': 0.},
                   {'params':model.tor_filter.parameters(), 'lr': 0.},
                   {'params':model.tor_recurrent.parameters(), 'lr':0.},
                   {'params':model.res_embedding.parameters(), 'lr':0},
-                  {'params':model.filter.parameters(), 'lr':0},
-                  {'params':model.res_recurrent.parameters(), 'lr':0.},
+                  {'params':model.filter.parameters(), 'lr':0.0001},
+                  {'params':model.res_recurrent.parameters(), 'lr':0.0001},
                   {'params':model.linear_omega.parameters(), 'lr':0.}],
                  amsgrad=True)
 
@@ -107,8 +106,6 @@ RL = Reinforcement(sequence=IDP_SEQ,
                   device=device)
 
 
-# RL training
-  
 def rank_reward(reward_list, ratio):
     #if hard < 30: return -1e4
     '''
@@ -125,6 +122,7 @@ def rank_reward(reward_list, ratio):
         score += (reward_list[key][-1] - ratio[key][0])/ratio[key][1]
     return score
 
+# Training
 
 n_iterations = 5
 rewards = {'jc': [], 'noe': [], 'pre': []}
@@ -139,7 +137,6 @@ exp, exp_idxs = RL.get_exp_data(scnlabels)
 st = time.time()
 
 for i in range(n_iterations):
-    # Reinforce algorithm
     loss, eisd = RL.train(batch_size=50, exp_data=exp,
                                 idxs=exp_idxs, 
                                 temp = temp_schedule[i],

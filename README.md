@@ -1,5 +1,5 @@
 # DynamICE (Dynamic IDP Creator with Experimental restraints)
-A generative-reinforcement model (RL-GRNN) to generate new IDP conformer ensembles biased towards experimental data.
+A generative-reinforcement model to generate new IDP conformer ensembles biased towards experimental data.
 
 ## Required packages
 * Python (3.7.1)
@@ -14,5 +14,5 @@ A generative-reinforcement model (RL-GRNN) to generate new IDP conformer ensembl
 Modify parameters in training files based on request.
 * train_grnn.py for pretraining generative model.
 * generate_rnn.py for generating conformers with trained models.
-* run_rl.py for reinforcement learning with pretrained models.
+* run_rl.py Biasing pretrained models with exp data.
 * torsion_splits.py for extracting backbone and sidechain torsion angles for pre-training. 

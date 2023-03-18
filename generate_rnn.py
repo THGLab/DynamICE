@@ -45,8 +45,7 @@ test_gen = torsion_loader(test,
                          gaussian_normalize=settings['data']['gaussian_normalize'],
                          gaussian_factor=settings['data']['gaussian_factor'],
                          batch_size=settings['training']['val_batch_size'],
-                         device=device,
-                         shuffle=True) #settings['training']['shuffle'])
+                         device=device)
 test_batch, _ = next(test_gen)
 
 # model
@@ -94,7 +93,6 @@ for n in range(100):
 #torsion_hist(omg, 'omega')#, os.path.join(out_path, 'omega.png'))
 #torsion_hist(chi1, 'chi1')#, os.path.join(out_path, 'chi1.png'))
 #torsion_hist(chi2, 'chi2')#, os.path.join(out_path, 'chi2.png'))
-
 '''
 
 
